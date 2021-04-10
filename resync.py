@@ -2,10 +2,21 @@ import click
 
 timestamp_indexes = []
 timestamps = []
+numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }
 
 # match_timestamp checks to see if a line matches a .srt timestamp
 def match_timestamp(line):
-    # stub
+    # temporary template detection while regex is being designed
+    template = "XX:XX:XX,XXX --> XX:XX:XX,XXX"
+    index = 0
+    for char in template:
+        if char == "X":
+            if line[index] not in numbers:
+                return False
+        else:
+            if line[index] != char:
+                return False
+        index = index + 1
     return True
 
 # collect_timestamps goes through the source file and finds all timestamps
