@@ -49,6 +49,7 @@ def collect_timestamps(file_path):
             secondTimestamp = process_timestamp(stamps[2])
             timestamps.append([firstTimestamp, secondTimestamp])
         index = index + 1
+    subfile.close()
         
 def add_timestamps(timestamp, delay_stamp):
     milli = timestamp.milli + delay_stamp.milli
@@ -75,6 +76,24 @@ def add_delay(delay):
         delayed_stamp_2 = add_timestamps(timestamp[1], delay)
         delayed_stamps.append([delayed_stamp_1, delayed_stamp_2])
 
+def create_raw_stamp(timestamp_pair):
+    ts_1 = timestamp_pair[0]
+    ts_2 = timestamp_pair[1]
+    return f"{ts_1.hours}:{ts_1.minutes}:{ts_1.seconds},{ts_1.milli} --> {ts_2.hours}:{ts_2.minutes}:{ts_2.seconds},{ts_2.milli}\n"
+
+# generate_delayed_file creates the delayed srt file and saves it at the user-specified path
+def generate_delayed_file(sub_path, output_path):
+    with open(output_path, "w") as outfile:
+        subfile = open(sub_path, "r")
+        index = 0
+        for line in subfile:
+            if match_timestamp(line) == True:
+                outfile.write(create_raw_stamp(delayed_stamps[index]))
+                index = index + 1
+            else:
+                outfile.write(line)
+        outfile.close()
+    
 @click.command()
 @click.option("-f", "--file", help="The path to the subtitles file")
 @click.option("-o", "--output", default="correctedsubs.srt", help="The output path for the corrected file")
@@ -86,6 +105,7 @@ def main(file, output, delay):
     delay_stamp = process_timestamp(delay)
     add_delay(delay_stamp)
     # generate updated subtitles file
+    generate_delayed_file(file, output)
     
 if __name__ == "__main__":	
     main()
