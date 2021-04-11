@@ -26,6 +26,8 @@ def process_timestamp(raw_timestamp):
 def match_timestamp(line):
     # temporary template detection while regex is being designed
     template = "XX:XX:XX,XXX --> XX:XX:XX,XXX"
+    if len(line) != len(template):
+        return False
     index = 0
     for char in template:
         if char == "X":
