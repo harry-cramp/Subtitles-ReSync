@@ -5,6 +5,9 @@ timestamps = []
 delayed_stamps = []
 numbers = { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' }
 
+ts_template = "XX:XX:XX,XXX"
+ts_full_template = "XX:XX:XX,XXX --> XX:XX:XX,XXX"
+
 class Timestamp:
     def __init__(self, hours, minutes, seconds, milli):
         self.hours = hours
@@ -23,9 +26,8 @@ def process_timestamp(raw_timestamp):
     return Timestamp(hours, minutes, seconds, milli)
 
 # match_timestamp checks to see if a line matches a .srt timestamp
-def match_timestamp(line):
+def match_timestamp(line, template = ts_full_template):
     # temporary template detection while regex is being designed
-    template = "XX:XX:XX,XXX --> XX:XX:XX,XXX"
     if len(line) != len(template):
         return False
     index = 0
@@ -104,6 +106,13 @@ def main(file, output, delay):
     # sanitise input
     if not file:
         print("You must specify a subtitles file!")
+        exit()
+
+    if not delay:
+        print("You must specify a delay!")
+        exit()
+    elif not match_timestamp(delay, ts_template):
+        print("The delay must be in the format hours:minutes:seconds,milliseconds (e.g. 01:23:45,678)!")
         exit()
 
     # get timestamps from subtitle file
