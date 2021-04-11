@@ -101,13 +101,18 @@ def generate_delayed_file(sub_path, output_path):
 @click.option("-o", "--output", default="correctedsubs.srt", help="The output path for the corrected file")
 @click.option("-d", "--delay", help="The delay to add in format hour:minute:second,millisecond")
 def main(file, output, delay):
+    # sanitise input
+    if not file:
+        print("You must specify a subtitles file!")
+        exit()
+
     # get timestamps from subtitle file
-    collect_timestamps(file)
+    #collect_timestamps(file)
     # add delay to each timestamp
-    delay_stamp = process_timestamp(delay)
-    add_delay(delay_stamp)
+    #delay_stamp = process_timestamp(delay)
+    #add_delay(delay_stamp)
     # generate updated subtitles file
-    generate_delayed_file(file, output)
+    #generate_delayed_file(file, output)
     
 if __name__ == "__main__":	
     main()
